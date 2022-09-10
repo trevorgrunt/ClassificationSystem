@@ -29,17 +29,17 @@
 
 	$.validator.addMethod( "maxWords", function( value, element, params ) {
 		return this.optional( element ) || stripHtml( value ).match( /\b\w+\b/g ).length <= params;
-	}, $.validator.format( "Please enter {0} words or less." ) );
+	}, $.validator.format( "Пожалуйста, введите {0} слов или меньше." ) );
 
 	$.validator.addMethod( "minWords", function( value, element, params ) {
 		return this.optional( element ) || stripHtml( value ).match( /\b\w+\b/g ).length >= params;
-	}, $.validator.format( "Please enter at least {0} words." ) );
+	}, $.validator.format( "Введите не менее {0} слов." ) );
 
 	$.validator.addMethod( "rangeWords", function( value, element, params ) {
 		var valueStripped = stripHtml( value ),
 			regex = /\b\w+\b/g;
 		return this.optional( element ) || valueStripped.match( regex ).length >= params[ 0 ] && valueStripped.match( regex ).length <= params[ 1 ];
-	}, $.validator.format( "Please enter between {0} and {1} words." ) );
+	}, $.validator.format( "Пожалуйста, введите от {0} до {1} слов." ) );
 
 }() );
 
@@ -83,11 +83,11 @@ $.validator.addMethod( "accept", function( value, element, param ) {
 	// Either return true because we've validated each file, or because the
 	// browser does not support element.files and the FileList feature
 	return true;
-}, $.validator.format( "Please enter a value with a valid mimetype." ) );
+}, $.validator.format( "Пожалуйста, введите значение с допустимым mimetype." ) );
 
 $.validator.addMethod( "alphanumeric", function( value, element ) {
 	return this.optional( element ) || /^\w+$/i.test( value );
-}, "Letters, numbers, and underscores only please" );
+}, "Пожалуйста, только буквы, цифры и символы подчеркивания" );
 
 /*
  * Dutch bank account numbers (not 'giro' numbers) have 9 digits
@@ -114,13 +114,13 @@ $.validator.addMethod( "bankaccountNL", function( value, element ) {
 		sum = sum + factor * digit;
 	}
 	return sum % 11 === 0;
-}, "Please specify a valid bank account number" );
+}, "Пожалуйста, укажите действительный номер банковского счета" );
 
 $.validator.addMethod( "bankorgiroaccountNL", function( value, element ) {
 	return this.optional( element ) ||
 			( $.validator.methods.bankaccountNL.call( this, value, element ) ) ||
 			( $.validator.methods.giroaccountNL.call( this, value, element ) );
-}, "Please specify a valid bank or giro account number" );
+}, "Пожалуйста, укажите действительный номер банковского или жиросчета" );
 
 /**
  * BIC is the business identifier code (ISO 9362). This BIC check is not a guarantee for authenticity.
@@ -139,7 +139,7 @@ $.validator.addMethod( "bankorgiroaccountNL", function( value, element ) {
  */
 $.validator.addMethod( "bic", function( value, element ) {
     return this.optional( element ) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test( value.toUpperCase() );
-}, "Please specify a valid BIC code" );
+}, "Укажите действительный BIC-код." );
 
 /*
  * Código de identificación fiscal ( CIF ) is the tax identification code for Spanish legal entities
@@ -254,7 +254,7 @@ $.validator.addMethod( "cifES", function( value, element ) {
 	// Can be either
 	return control === control_digit || control === control_letter;
 
-}, "Please specify a valid CIF number." );
+}, "Укажите действительный номер CIF." );
 
 /*
  * Brazillian CPF number (Cadastrado de Pessoas Físicas) is the equivalent of a Brazilian tax registration number.
@@ -315,7 +315,7 @@ $.validator.addMethod( "cpfBR", function( value ) {
 	}
 	return false;
 
-}, "Please specify a valid CPF number" );
+}, "Пожалуйста, укажите действительный номер CPF" );
 
 // https://jqueryvalidation.org/creditcard-method/
 // based on https://en.wikipedia.org/wiki/Luhn_algorithm
@@ -356,7 +356,7 @@ $.validator.addMethod( "creditcard", function( value, element ) {
 	}
 
 	return ( nCheck % 10 ) === 0;
-}, "Please enter a valid credit card number." );
+}, "Пожалуйста введите действующий номер кредитной карты." );
 
 /* NOTICE: Modified version of Castle.Components.Validator.CreditCardValidator
  * Redistributed under the the Apache License 2.0 at http://www.apache.org/licenses/LICENSE-2.0
@@ -426,7 +426,7 @@ $.validator.addMethod( "creditcardtypes", function( value, element, param ) {
 		return true;
 	}
 	return false;
-}, "Please enter a valid credit card number." );
+}, "Пожалуйста введите действующий номер кредитной карты." );
 
 /**
  * Validates currencies with any given symbols by @jameslouiz
@@ -468,7 +468,7 @@ $.validator.addMethod( "currency", function( value, element, param ) {
     regex = new RegExp( regex );
     return this.optional( element ) || regex.test( value );
 
-}, "Please specify a valid currency" );
+}, "Укажите допустимую валюту." );
 
 $.validator.addMethod( "dateFA", function( value, element ) {
 	return this.optional( element ) || /^[1-4]\d{3}\/((0?[1-6]\/((3[0-1])|([1-2][0-9])|(0?[1-9])))|((1[0-2]|(0?[7-9]))\/(30|([1-2][0-9])|(0?[1-9]))))$/.test( value );
@@ -522,7 +522,7 @@ $.validator.addMethod( "dateNL", function( value, element ) {
 $.validator.addMethod( "extension", function( value, element, param ) {
 	param = typeof param === "string" ? param.replace( /,/g, "|" ) : "png|jpe?g|gif";
 	return this.optional( element ) || value.match( new RegExp( "\\.(" + param + ")$", "i" ) );
-}, $.validator.format( "Please enter a value with a valid extension." ) );
+}, $.validator.format( "Введите значение с допустимым расширением." ) );
 
 /**
  * Dutch giro account numbers (not bank numbers) have max 7 digits
@@ -670,7 +670,7 @@ $.validator.addMethod( "iban", function( value, element ) {
 
 $.validator.addMethod( "integer", function( value, element ) {
 	return this.optional( element ) || /^-?\d+$/.test( value );
-}, "A positive or negative non-decimal number please" );
+}, "Положительное или отрицательное недесятичное число, пожалуйста" );
 
 $.validator.addMethod( "ipv4", function( value, element ) {
 	return this.optional( element ) || /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/i.test( value );
@@ -682,15 +682,15 @@ $.validator.addMethod( "ipv6", function( value, element ) {
 
 $.validator.addMethod( "lettersonly", function( value, element ) {
 	return this.optional( element ) || /^[a-z]+$/i.test( value );
-}, "Letters only please" );
+}, "Только буквы пожалуйста" );
 
 $.validator.addMethod( "letterswithbasicpunc", function( value, element ) {
 	return this.optional( element ) || /^[a-z\-.,()'"\s]+$/i.test( value );
-}, "Letters or punctuation only please" );
+}, "Пожалуйста, только буквы или знаки препинания" );
 
 $.validator.addMethod( "mobileNL", function( value, element ) {
 	return this.optional( element ) || /^((\+|00(\s|\s?\-\s?)?)31(\s|\s?\-\s?)?(\(0\)[\-\s]?)?|0)6((\s|\s?\-\s?)?[0-9]){8}$/.test( value );
-}, "Please specify a valid mobile number" );
+}, "Пожалуйста, укажите действующий номер мобильного телефона" );
 
 /* For UK phone functions, do the following server side processing:
  * Compare original input with this RegEx pattern:
@@ -704,7 +704,7 @@ $.validator.addMethod( "mobileUK", function( phone_number, element ) {
 	phone_number = phone_number.replace( /\(|\)|\s+|-/g, "" );
 	return this.optional( element ) || phone_number.length > 9 &&
 		phone_number.match( /^(?:(?:(?:00\s?|\+)44\s?|0)7(?:[1345789]\d{2}|624)\s?\d{3}\s?\d{3})$/ );
-}, "Please specify a valid mobile number" );
+}, "Пожалуйста, укажите действующий номер мобильного телефона" );
 
 $.validator.addMethod( "netmask", function( value, element ) {
     return this.optional( element ) || /^(254|252|248|240|224|192|128)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)/i.test( value );
@@ -806,11 +806,11 @@ $.validator.addMethod( "nipPL", function( value ) {
 
 $.validator.addMethod( "notEqualTo", function( value, element, param ) {
 	return this.optional( element ) || !$.validator.methods.equalTo.call( this, value, element, param );
-}, "Please enter a different value, values must not be the same." );
+}, "Пожалуйста, введите другое значение, значения не должны совпадать." );
 
 $.validator.addMethod( "nowhitespace", function( value, element ) {
 	return this.optional( element ) || /^\S+$/i.test( value );
-}, "No white space please" );
+}, "Пожалуйста, без пробелов" );
 
 /**
 * Return true if the field value matches the given format RegExp
@@ -973,7 +973,7 @@ $.validator.addMethod( "require_from_group", function( value, element, options )
 		$fields.data( "being_validated", false );
 	}
 	return isValid;
-}, $.validator.format( "Please fill at least {0} of these fields." ) );
+}, $.validator.format( "Пожалуйста, заполните не менее {0} из этих полей." ) );
 
 /*
  * Lets you say "either at least X inputs that match selector Y must be filled,
@@ -1017,7 +1017,7 @@ $.validator.addMethod( "skip_or_fill_minimum", function( value, element, options
 		$fields.data( "being_validated", false );
 	}
 	return isValid;
-}, $.validator.format( "Please either skip these fields or fill at least {0} of them." ) );
+}, $.validator.format( "Пропустите эти поля или заполните хотя бы {0} из них." ) );
 
 /* Validates US States and/or Territories by @jdforsythe
  * Can be case insensitive or require capitalization - default is case insensitive
@@ -1072,12 +1072,12 @@ $.validator.addMethod( "stateUS", function( value, element, options ) {
 
 	regex = caseSensitive ? new RegExp( regex ) : new RegExp( regex, "i" );
 	return this.optional( element ) || regex.test( value );
-}, "Please specify a valid state" );
+}, "Пожалуйста, укажите допустимое состояние" );
 
 // TODO check if value starts with <, otherwise don't try stripping anything
 $.validator.addMethod( "strippedminlength", function( value, element, param ) {
 	return $( value ).text().length >= param;
-}, $.validator.format( "Please enter at least {0} characters" ) );
+}, $.validator.format( "Пожалуйста, введите не менее {0} символов" ) );
 
 $.validator.addMethod( "time", function( value, element ) {
 	return this.optional( element ) || /^([01]\d|2[0-3]|[0-9])(:[0-5]\d){1,2}$/.test( value );
