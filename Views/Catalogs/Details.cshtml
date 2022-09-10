@@ -1,0 +1,36 @@
+﻿@model ClassificationSystem.Models.Catalog
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Подробнее</h1>
+
+<div>
+    <h4>Каталог</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Goal)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Goal)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Advantages)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Advantages)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Disadvantages)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Disadvantages)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Изменить</a> |
+    <a asp-action="Index">Обратно к списку</a>
+</div>
