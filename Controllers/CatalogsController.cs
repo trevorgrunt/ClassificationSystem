@@ -1,13 +1,12 @@
-﻿using System;
+﻿using ClassificationSystem.Data;
+using ClassificationSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ClassificationSystem.Data;
-using ClassificationSystem.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ClassificationSystem.Controllers
 {
@@ -21,9 +20,34 @@ namespace ClassificationSystem.Controllers
         }
 
         // GET: Catalogs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SortOrder, int Page = 1)
         {
-            return View(await _context.Catalog.ToListAsync());
+            List<Catalog> Classifications = _context.Catalog.ToList();
+            const int PageSize = 10;
+            if (Page < 1)
+            {
+                Page = 1;
+            }
+            int ClassCount = Classifications.Count();
+            var Pager = new Pager(ClassCount, Page, PageSize);
+            int RecSkip = (Page - 1) * PageSize;
+            var data = Classifications.Skip(RecSkip).Take(Pager.PageSize).ToList();
+            this.ViewBag.Pager = Pager; 
+
+            ViewBag.GoalSortParm = String.IsNullOrEmpty(SortOrder) ? "goal_desc" : "";
+            var Classes = from c in _context.Catalog
+                           select c;
+            switch (SortOrder)
+            {
+                case "goal_desc":
+                    Classes = Classes.OrderByDescending(c => c.Goal);
+                    break;
+                default:
+                    Classes = Classes.OrderBy(c => c.Goal);
+                    break;
+            }
+            //return View(Classes.ToList());
+            return View(await Classes.ToListAsync());
         }
 
         // GET: Catalogs

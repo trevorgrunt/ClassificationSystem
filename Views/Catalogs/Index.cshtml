@@ -1,7 +1,16 @@
 ﻿@model IEnumerable<ClassificationSystem.Models.Catalog>
 
-@{
+@{ 
     ViewData["Title"] = "Каталог";
+    Pager Pager = new Pager();
+    int PageNumber = 0;
+
+    if(ViewBag.Pager != null)
+    {
+        Pager = ViewBag.Pager;
+        PageNumber = Pager.CurrentPage;
+    }
+    
 }
 
 <h1>Классификация вычислительных систем</h1>
@@ -9,27 +18,55 @@
 <p>
     <a asp-action="Create">Создать новый элемент</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                Класс
+                @Html.ActionLink("Классификация", "Index", new { SortOrder = ViewBag.GoalSortParm })
             </th>
-            <th></th>
+            <th> Действия </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Goal)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-            </td>
-        </tr>
+        @foreach (var item in Model)
+        {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Goal)
+    </td>
+    <td>
+        <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+        <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+        <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+    </td>
+</tr>
 }
     </tbody>
 </table>
+
+<div class="container">
+    @if (Pager.TotalPages > 0)
+    {
+        <ul class="pagination justify-content-end">
+            @for (var pge = Pager.StartPage; pge <= Pager.EndPage; pge++)
+            {
+                <li class="page-item @(pge == Pager.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-controller="Catalogs" asp-action="Index" asp-route-pg="@pge">
+                        @pge
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+
+    @if (Pager.CurrentPage < Pager.TotalPages)
+    {
+        <li class="page-item">
+            <a class="page-link" asp-controller="Catalogs" asp-action="Index" asp-route-pg="@(Pager.CurrentPage + 1)">Следующая страница</a>
+        </li>
+        <li>
+            <a class="page-link" asp-controller="Catalogs" asp-action="Index" asp-route-pg="@(Pager.TotalPages)">Последняя страница</a>
+        </li>
+    }
+</div>
