@@ -20,23 +20,26 @@ namespace ClassificationSystem.Controllers
         }
 
         // GET: Catalogs
-        public async Task<IActionResult> Index(string SortOrder, int Page = 1)
+        public async Task<IActionResult> Index(string SortOrder, string SearchString, string CurrentFilter, int? pageNumber)
         {
-            List<Catalog> Classifications = _context.Catalog.ToList();
-            const int PageSize = 10;
-            if (Page < 1)
-            {
-                Page = 1;
-            }
-            int ClassCount = Classifications.Count();
-            var Pager = new Pager(ClassCount, Page, PageSize);
-            int RecSkip = (Page - 1) * PageSize;
-            var data = Classifications.Skip(RecSkip).Take(Pager.PageSize).ToList();
-            this.ViewBag.Pager = Pager; 
+            ViewData["CurrentSort"] = SortOrder;
+            ViewData["GoalSortParm"] = String.IsNullOrEmpty(SortOrder) ? "goal_desc" : "";
 
-            ViewBag.GoalSortParm = String.IsNullOrEmpty(SortOrder) ? "goal_desc" : "";
+            if (SearchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                SearchString = CurrentFilter;
+            }
+
             var Classes = from c in _context.Catalog
                            select c;
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                Classes = Classes.Where(s => s.Goal.Contains(SearchString));
+            }
             switch (SortOrder)
             {
                 case "goal_desc":
@@ -46,20 +49,9 @@ namespace ClassificationSystem.Controllers
                     Classes = Classes.OrderBy(c => c.Goal);
                     break;
             }
-            //return View(Classes.ToList());
-            return View(await Classes.ToListAsync());
-        }
 
-        // GET: Catalogs
-        public async Task<IActionResult> ShowSearchForm()
-        {
-            return View();
-        }
-
-        // POST: Catalogs
-        public async Task<IActionResult> ShowSearchResult(string Keyword)
-        {
-            return View("Index", await _context.Catalog.Where( k => k.Goal.Contains(Keyword)).ToListAsync());
+            int pageSize = 4;
+            return View(await PaginatedList<Catalog>.CreateAsync(Classes.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Catalogs/Details/5

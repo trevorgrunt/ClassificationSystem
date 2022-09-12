@@ -1,16 +1,6 @@
-﻿@model IEnumerable<ClassificationSystem.Models.Catalog>
-
-@{ 
+﻿@model PaginatedList<ClassificationSystem.Models.Catalog>
+@{
     ViewData["Title"] = "Каталог";
-    Pager Pager = new Pager();
-    int PageNumber = 0;
-
-    if(ViewBag.Pager != null)
-    {
-        Pager = ViewBag.Pager;
-        PageNumber = Pager.CurrentPage;
-    }
-    
 }
 
 <h1>Классификация вычислительных систем</h1>
@@ -19,11 +9,22 @@
     <a asp-action="Create">Создать новый элемент</a>
 </p>
 
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Поиск по значению: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Поиск" class="btn btn-default" /> |
+            <a asp-action="Index">Полный список</a>
+        </p>
+    </div>
+</form>
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Классификация", "Index", new { SortOrder = ViewBag.GoalSortParm })
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GoalSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Классификация</a>
             </th>
             <th> Действия </th>
         </tr>
@@ -31,42 +32,36 @@
     <tbody>
         @foreach (var item in Model)
         {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.Goal)
-    </td>
-    <td>
-        <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-        <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-        <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-    </td>
-</tr>
-}
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Goal)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
-<div class="container">
-    @if (Pager.TotalPages > 0)
-    {
-        <ul class="pagination justify-content-end">
-            @for (var pge = Pager.StartPage; pge <= Pager.EndPage; pge++)
-            {
-                <li class="page-item @(pge == Pager.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-controller="Catalogs" asp-action="Index" asp-route-pg="@pge">
-                        @pge
-                    </a>
-                </li>
-            }
-        </ul>
-    }
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
 
-    @if (Pager.CurrentPage < Pager.TotalPages)
-    {
-        <li class="page-item">
-            <a class="page-link" asp-controller="Catalogs" asp-action="Index" asp-route-pg="@(Pager.CurrentPage + 1)">Следующая страница</a>
-        </li>
-        <li>
-            <a class="page-link" asp-controller="Catalogs" asp-action="Index" asp-route-pg="@(Pager.TotalPages)">Последняя страница</a>
-        </li>
-    }
-</div>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Предыдущая страница
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Следующая страница
+</a>
